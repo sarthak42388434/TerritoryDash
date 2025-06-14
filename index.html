@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Territory Conquest - Multiplayer Paper.io Game | Play Free Online</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Play Territory Conquest, a free multiplayer territory capture game inspired by Paper.io. Capture space, avoid collisions, and dominate the leaderboard in this HTML5 browser game.">
+    <meta name="keywords" content="paper.io, territory game, multiplayer game, HTML5 game, browser game, online game, territory conquest">
+    <meta name="author" content="Sarthak Sharma">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Territory Conquest - Multiplayer Paper.io Game">
+    <meta property="og:description" content="Play Territory Conquest, a free multiplayer territory capture game inspired by Paper.io. Capture space and dominate the leaderboard!">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/4F46E5/ffffff?text=Territory+Conquest">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Territory Conquest - Multiplayer Paper.io Game">
+    <meta name="twitter:description" content="Play Territory Conquest, a free multiplayer territory capture game inspired by Paper.io.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzRGNDZFNSIvPgo8cGF0aCBkPSJNOCAxNkgxNlY4SDE2VjE2SDI0VjI0SDE2VjE2SDhaIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+">
+    
+    <!-- External Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .game-canvas {
+            border: 3px solid #4F46E5;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .adsense-placeholder {
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .player-trail {
+            opacity: 0.7;
+        }
+        
+        .leaderboard-item {
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            background-color: #f8fafc;
+        }
+        
+        .game-controls {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        @media (max-width: 768px) {
+            .game-canvas {
+                width: 100% !important;
+                max-width: 350px;
+                height: 350px !important;
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-4 shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-gamepad text-2xl"></i>
+                    <h1 class="text-2xl font-bold">Territory Conquest</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#game" class="nav-link px-4 py-2 rounded-lg transition-all hover:bg-white hover:bg-opacity-20" onclick="showSection('game')">Game</a>
+                    <a href="#about" class="nav-link px-4 py-2 rounded-lg transition-all hover:bg-white hover:bg-opacity-20" onclick="showSection('about')">About</a>
+                    <a href="#contact" class="nav-link px-4 py-2 rounded-lg transition-all hover:bg-white hover:bg-opacity-20" onclick="showSection('contact')">Contact</a>
+                    <a href="#privacy" class="nav-link px-4 py-2 rounded-lg transition-all hover:bg-white hover:bg-opacity-20" onclick="showSection('privacy')">Privacy</a>
+                    <a href="#blog" class="nav-link px-4 py-2 rounded-lg transition-all hover:bg-white hover:bg-opacity-20" onclick="showSection('blog')">Blog</a>
+                </nav>
+                <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden mt-4 space-y-2 hidden">
+                <a href="#game" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20" onclick="showSection('game')">Game</a>
+                <a href="#about" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20" onclick="showSection('about')">About</a>
+                <a href="#contact" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20" onclick="showSection('contact')">Contact</a>
+                <a href="#privacy" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20" onclick="showSection('privacy')">Privacy</a>
+                <a href="#blog" class="block px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20" onclick="showSection('blog')">Blog</a>
+            </div>
+        </div>
+        
+        <!-- AdSense Placeholder -->
+        <div class="adsense-placeholder mt-4 mx-4 rounded-lg">
+            Google AdSense - Header Banner (728x90)
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- Game Section -->
+        <section id="gameSection" class="section-content">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Territory Conquest</h2>
+                <p class="text-xl text-gray-600 mb-6">Capture territory, avoid collisions, dominate the leaderboard!</p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row gap-8 items-start justify-center">
+                <!-- Game Canvas Container -->
+                <div class="flex flex-col items-center">
+                    <!-- Player Name Input -->
+                    <div id="nameInput" class="mb-6 p-6 bg-white rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 text-center">Enter Your Name</h3>
+                        <input type="text" id="playerName" placeholder="Your name..." class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" maxlength="15">
+                        <button onclick="startGame()" class="w-full mt-3 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+                            <i class="fas fa-play mr-2"></i>Start Game
+                        </button>
+                    </div>
+                    
+                    <!-- Game Canvas -->
+                    <canvas id="gameCanvas" class="game-canvas hidden" width="500" height="500"></canvas>
+                    
+                    <!-- Game Controls -->
+                    <div id="gameControls" class="hidden mt-4 p-4 rounded-xl game-controls">
+                        <div class="text-center space-y-2">
+                            <p class="text-sm text-gray-600">Use <i class="fas fa-arrows-alt"></i> Arrow Keys or Touch to Move</p>
+                            <div class="flex justify-center space-x-4">
+                                <button onclick="toggleSound()" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                    <i id="soundIcon" class="fas fa-volume-up"></i>
+                                </button>
+                                <button onclick="resetGame()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                                    <i class="fas fa-redo mr-1"></i>Restart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Over Screen -->
+                    <div id="gameOverScreen" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md mx-4">
+                            <h3 class="text-2xl font-bold text-red-600 mb-4">Game Over!</h3>
+                            <p class="text-gray-600 mb-2">Territory Captured: <span id="finalScore" class="font-bold text-indigo-600"></span>%</p>
+                            <p class="text-gray-600 mb-6">Rank: <span id="finalRank" class="font-bold text-indigo-600"></span></p>
+                            <button onclick="restartGame()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+                                <i class="fas fa-play mr-2"></i>Play Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Game Stats Sidebar -->
+                <div class="w-full lg:w-80">
+                    <!-- Player Stats -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-user-circle mr-2 text-indigo-600"></i>Your Stats
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Name:</span>
+                                <span id="currentPlayerName" class="font-semibold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Territory:</span>
+                                <span id="playerTerritory" class="font-semibold text-indigo-600">0%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Rank:</span>
+                                <span id="playerRank" class="font-semibold">#-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Leaderboard -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-trophy mr-2 text-yellow-500"></i>Leaderboard
+                        </h3>
+                        <div id="leaderboard" class="space-y-2">
+                            <!-- Leaderboard entries will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AdSense Placeholder -->
+            <div class="adsense-placeholder mt-8 rounded-lg">
+                Google AdSense - Content Banner (728x90)
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="aboutSection" class="section-content hidden">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">About Territory Conquest</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-gamepad mr-2"></i>Game Overview
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Territory Conquest is an exciting multiplayer territory capture game inspired by Paper.io. 
+                            Navigate your colored block around the playing field to capture as much territory as possible 
+                            while avoiding collisions with other players' trails and your own tail.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">
+                            <i class="fas fa-target mr-2"></i>How to Play
+                        </h3>
+                        <ul class="text-gray-600 space-y-2">
+                            <li><i class="fas fa-arrow-right text-indigo-500 mr-2"></i>Use arrow keys or touch controls to move</li>
+                            <li><i class="fas fa-arrow-right text-indigo-500 mr-2"></i>Create closed loops to capture territory</li>
+                            <li><i class="fas fa-arrow-right text-indigo-500 mr-2"></i>Avoid hitting trails (yours or others')</li>
+                            <li><i class="fas fa-arrow-right text-indigo-500 mr-2"></i>Dominate the leaderboard!</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-indigo-600 text-center">
+                        <i class="fas fa-user-tie mr-2"></i>Developer Information
+                    </h3>
+                    <div class="text-center">
+                        <p class="text-gray-600 mb-4">
+                            This website is developed and maintained by <strong>Sarthak Sharma</strong>, 
+                            an indie game developer from Satna, Madhya Pradesh, India. The goal of this game 
+                            is to entertain users with a fast and strategic territory-capturing experience.
+                        </p>
+                        <div class="bg-gray-50 rounded-lg p-6 inline-block">
+                            <div class="space-y-2 text-left">
+                                <p><strong>Developer:</strong> Sarthak Sharma</p>
+                                <p><strong>Location:</strong> Gopal Colony, Tikuria Tola, Satna, Madhya Pradesh, India</p>
+                                <p><strong>Email:</strong> <a href="mailto:sarthaks42388434@gmail.com" class="text-indigo-600 hover:underline">sarthaks42388434@gmail.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contactSection" class="section-content hidden">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Contact Us</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="text-center mb-8">
+                        <i class="fas fa-envelope text-4xl text-indigo-600 mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-4">Get in Touch</h3>
+                        <p class="text-gray-600">Have questions, suggestions, or found a bug? We'd love to hear from you!</p>
+                    </div>
+                    
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Name</label>
+                            <input type="text" required class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your name">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Email</label>
+                            <input type="email" required class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="your.email@example.com">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Subject</label>
+                            <select class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option>General Inquiry</option>
+                                <option>Bug Report</option>
+                                <option>Feature Request</option>
+                                <option>Technical Support</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Message</label>
+                            <textarea required rows="5" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Your message..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold">
+                            <i class="fas fa-paper-plane mr-2"></i>Send Message
+                        </button>
+                    </form>
+                    
+                    <div class="mt-8 pt-6 border-t text-center">
+                        <p class="text-gray-600 mb-2">Or email us directly:</p>
+                        <a href="mailto:sarthaks42388434@gmail.com" class="text-indigo-600 hover:underline font-semibold text-lg">
+                            sarthaks42388434@gmail.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Privacy Policy Section -->
+        <section id="privacySection" class="section-content hidden">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Privacy Policy</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-8 space-y-8">
+                    <div>
+                        <p class="text-gray-600 mb-6"><strong>Last updated:</strong> December 2024</p>
+                        <p class="text-gray-600 leading-relaxed">
+                            This Privacy Policy describes how Territory Conquest ("we", "our", or "us") collects, 
+                            uses, and protects your information when you use our website and game service.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">Information We Collect</h3>
+                        <ul class="text-gray-600 space-y-2 list-disc pl-6">
+                            <li><strong>Game Data:</strong> Player names, scores, and gameplay statistics stored locally in your browser</li>
+                            <li><strong>Technical Data:</strong> Browser type, device information, and IP address for analytics</li>
+                            <li><strong>Cookies:</strong> Essential cookies for game functionality and optional analytics cookies</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">Third-Party Services</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Google AdSense</h4>
+                                <p class="text-gray-600">
+                                    We use Google AdSense to serve advertisements. Google may use cookies and web beacons 
+                                    to serve ads based on your visits to this and other websites. You can opt out of 
+                                    personalized advertising by visiting Google's Ad Settings.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">Data Storage and Security</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Game data is stored locally in your browser's localStorage. We do not collect or store 
+                            personal information on our servers. We implement appropriate security measures to protect 
+                            against unauthorized access to or alteration of your data.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">Your Rights</h3>
+                        <ul class="text-gray-600 space-y-2 list-disc pl-6">
+                            <li>Clear your game data by clearing your browser's localStorage</li>
+                            <li>Disable cookies through your browser settings</li>
+                            <li>Opt out of personalized ads through Google Ad Settings</li>
+                            <li>Contact us for any privacy-related concerns</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">Contact Information</h3>
+                        <p class="text-gray-600">
+                            If you have any questions about this Privacy Policy, please contact us at: 
+                            <a href="mailto:sarthaks42388434@gmail.com" class="text-indigo-600 hover:underline">sarthaks42388434@gmail.com</a>
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-indigo-600">Changes to This Policy</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            We may update this Privacy Policy from time to time. We will notify you of any changes 
+                            by posting the new Privacy Policy on this page and updating the "Last updated" date.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blogSection" class="section-content hidden">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Game Development Blog</h2>
+                
+                <div class="grid gap-8">
+                    <!-- Blog Post 1 -->
+                    <article class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="p-8">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i>
+                                <span class="text-gray-500">December 15, 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold mb-4">Mastering Territory Conquest: Advanced Strategies</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Learn the advanced techniques that separate novice players from territory conquest masters. 
+                                From optimal pathing to risk management, discover the strategies that will elevate your gameplay.
+                            </p>
+                            <div class="space-y-3">
+                                <h4 class="font-semibold text-gray-800">Key Strategies:</h4>
+                                <ul class="text-gray-600 space-y-1 list-disc pl-6">
+                                    <li><strong>Edge Hugging:</strong> Stay close to your territory border for quick escapes</li>
+                                    <li><strong>Small Loops:</strong> Capture small, safe territories rather than risky large ones</li>
+                                    <li><strong>Opponent Prediction:</strong> Anticipate other players' movements</li>
+                                    <li><strong>Corner Strategy:</strong> Use map corners for defensive positioning</li>
+                                </ul>
+                            </div>
+                            <button class="mt-4 text-indigo-600 hover:underline font-semibold">Read Full Article →</button>
+                        </div>
+                    </article>
+                    
+                    <!-- Blog Post 2 -->
+                    <article class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="p-8">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i>
+                                <span class="text-gray-500">December 10, 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold mb-4">Behind the Scenes: Building Territory Conquest</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Take a look at the development process behind Territory Conquest, from initial concept 
+                                to the final HTML5 game. Learn about the technical challenges and creative decisions 
+                                that shaped this multiplayer experience.
+                            </p>
+                            <div class="space-y-3">
+                                <h4 class="font-semibold text-gray-800">Development Highlights:</h4>
+                                <ul class="text-gray-600 space-y-1 list-disc pl-6">
+                                    <li>Canvas-based rendering for smooth animations</li>
+                                    <li>AI bot implementation for single-player experience</li>
+                                    <li>Responsive design for mobile and desktop</li>
+                                    <li>Local storage for persistent leaderboards</li>
+                                </ul>
+                            </div>
+                            <button class="mt-4 text-indigo-600 hover:underline font-semibold">Read Full Article →</button>
+                        </div>
+                    </article>
+                    
+                    <!-- Blog Post 3 -->
+                    <article class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="p-8">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i>
+                                <span class="text-gray-500">December 5, 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold mb-4">Game Performance Tips for Mobile Players</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Playing Territory Conquest on mobile? Here are essential tips to optimize your 
+                                performance and master touch controls for competitive gameplay.
+                            </p>
+                            <div class="space-y-3">
+                                <h4 class="font-semibold text-gray-800">Mobile Optimization Tips:</h4>
+                                <ul class="text-gray-600 space-y-1 list-disc pl-6">
+                                    <li>Use swipe gestures for precise direction changes</li>
+                                    <li>Enable fullscreen mode for better visibility</li>
+                                    <li>Adjust device orientation for comfort</li>
+                                    <li>Close background apps for smoother performance</li>
+                                </ul>
+                            </div>
+                            <button class="mt-4 text-indigo-600 hover:underline font-semibold">Read Full Article →</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4">
+            <!-- AdSense Placeholder -->
+            <div class="adsense-placeholder mb-8 rounded-lg">
+                Google AdSense - Footer Banner (728x90)
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-gamepad mr-2"></i>Territory Conquest
+                    </h4>
+                    <p class="text-gray-300 leading-relaxed">
+                        A fast-paced multiplayer territory capture game inspired by Paper.io. 
+                        Compete with players worldwide in this strategic browser-based experience.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#game" onclick="showSection('game')" class="text-gray-300 hover:text-white transition-colors">Play Game</a></li>
+                        <li><a href="#about" onclick="showSection('about')" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#contact" onclick="showSection('contact')" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="#privacy" onclick="showSection('privacy')" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-semibold mb-4">Developer</h4>
+                    <div class="text-gray-300 space-y-2">
+                        <p><i class="fas fa-user mr-2"></i>Sarthak Sharma</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>Satna, Madhya Pradesh, India</p>
+                        <p><i class="fas fa-envelope mr-2"></i><a href="mailto:sarthaks42388434@gmail.com" class="hover:text-white transition-colors">sarthaks42388434@gmail.com</a></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+                <p class="text-gray-300">
+                    © 2024 Territory Conquest. Developed by Sarthak Sharma. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Game Variables
+        let canvas, ctx;
+        let gameRunning = false;
+        let soundEnabled = true;
+        let gameSpeed = 100;
+        let players = [];
+        let currentPlayer = null;
+        let gameLoop = null;
+        let keys = {};
+        let touchStartX = 0, touchStartY = 0;
+        let leaderboardData = [];
+        
+        // Game Configuration
+        const CANVAS_WIDTH = 500;
+        const CANVAS_HEIGHT = 500;
+        const PLAYER_SIZE = 8;
+        const GRID_SIZE = 2;
+        const AI_PLAYERS = 5;
+        
+        // Colors for players
+        const PLAYER_COLORS = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+            '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9'
+        ];
+        
+        // Player Class
+        class Player {
+            constructor(name, x, y, color, isAI = false) {
+                this.name = name;
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.isAI = isAI;
+                this.direction = { x: 0, y: 1 };
+                this.trail = [];
+                this.territory = [];
+                this.territorySize = 0;
+                this.alive = true;
+                this.speed = 1;
+                
+                // Initialize starting territory
+                for (let i = -10; i <= 10; i++) {
+                    for (let j = -10; j <= 10; j++) {
+                        if (x + i >= 0 && x + i < CANVAS_WIDTH && y + j >= 0 && y + j < CANVAS_HEIGHT) {
+                            this.territory.push({ x: x + i, y: y + j });
+                        }
+                    }
+                }
+                this.calculateTerritorySize();
+            }
+            
+            update() {
+                if (!this.alive) return;
+                
+                if (this.isAI) {
+                    this.updateAI();
+                }
+                
+                this.x += this.direction.x * this.speed;
+                this.y += this.direction.y * this.speed;
+                
+                // Boundary check
+                if (this.x < 0 || this.x >= CANVAS_WIDTH || this.y < 0 || this.y >= CANVAS_HEIGHT) {
+                    this.die();
+                    return;
+                }
+                
+                // Add to trail if outside territory
+                if (!this.isInTerritory(this.x, this.y)) {
+                    this.trail.push({ x: this.x, y: this.y });
+                }
+                
+                // Check collision with other players' trails
+                this.checkCollisions();
+                
+                // Check if returned to territory (close loop)
+                if (this.trail.length > 0 && this.isInTerritory(this.x, this.y)) {
+                    this.captureTerritory();
+                }
+            }
+            
+            updateAI() {
+                // Simple AI logic
+                if (Math.random() < 0.05) { // 5% chance to change direction
+                    const directions = [
+                        { x: 0, y: -1 }, // up
+                        { x: 1, y: 0 },  // right
+                        { x: 0, y: 1 },  // down
+                        { x: -1, y: 0 }  // left
+                    ];
+                    this.direction = directions[Math.floor(Math.random() * directions.length)];
+                }
+                
+                // Avoid boundaries
+                if (this.x < 50) this.direction = { x: 1, y: 0 };
+                if (this.x > CANVAS_WIDTH - 50) this.direction = { x: -1, y: 0 };
+                if (this.y < 50) this.direction = { x: 0, y: 1 };
+                if (this.y > CANVAS_HEIGHT - 50) this.direction = { x: 0, y: -1 };
+            }
+            
+            isInTerritory(x, y) {
+                return this.territory.some(t => Math.abs(t.x - x) < PLAYER_SIZE && Math.abs(t.y - y) < PLAYER_SIZE);
+            }
+            
+            checkCollisions() {
+                // Check collision with own trail
+                if (this.trail.some(t => Math.abs(t.x - this.x) < PLAYER_SIZE && Math.abs(t.y - this.y) < PLAYER_SIZE)) {
+                    this.die();
+                    return;
+                }
+                
+                // Check collision with other players' trails and territory
+                for (let player of players) {
+                    if (player !== this && player.alive) {
+                        if (player.trail.some(t => Math.abs(t.x - this.x) < PLAYER_SIZE && Math.abs(t.y - this.y) < PLAYER_SIZE)) {
+                            this.die();
+                            return;
+                        }
+                        if (player.territory.some(t => Math.abs(t.x - this.x) < PLAYER_SIZE && Math.abs(t.y - this.y) < PLAYER_SIZE)) {
+                            this.die();
+                            return;
+                        }
+                    }
+                }
+            }
+            
+            captureTerritory() {
+                if (this.trail.length === 0) return;
+                
+                // Simple flood fill algorithm
+                const newTerritory = [...this.territory];
+                const trailPoints = [...this.trail];
+                
+                // Add trail to territory
+                trailPoints.forEach(point => {
+                    if (!newTerritory.some(t => t.x === point.x && t.y === point.y)) {
+                        newTerritory.push(point);
+                    }
+                });
+                
+                // Fill enclosed area (simplified)
+                const enclosed = this.getEnclosedArea(trailPoints);
+                enclosed.forEach(point => {
+                    if (!newTerritory.some(t => t.x === point.x && t.y === point.y)) {
+                        newTerritory.push(point);
+                    }
+                });
+                
+                this.territory = newTerritory;
+                this.trail = [];
+                this.calculateTerritorySize();
+            }
+            
+            getEnclosedArea(trail) {
+                // Simplified enclosed area calculation
+                if (trail.length < 3) return [];
+                
+                const enclosed = [];
+                const minX = Math.min(...trail.map(p => p.x));
+                const maxX = Math.max(...trail.map(p => p.x));
+                const minY = Math.min(...trail.map(p => p.y));
+                const maxY = Math.max(...trail.map(p => p.y));
+                
+                for (let x = minX; x <= maxX; x += GRID_SIZE) {
+                    for (let y = minY; y <= maxY; y += GRID_SIZE) {
+                        if (this.isPointInPolygon(x, y, trail)) {
+                            enclosed.push({ x, y });
+                        }
+                    }
+                }
+                
+                return enclosed;
+            }
+            
+            isPointInPolygon(x, y, polygon) {
+                let inside = false;
+                for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                    if (((polygon[i].y > y) !== (polygon[j].y > y)) &&
+                        (x < (polygon[j].x - polygon[i].x) * (y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)) {
+                        inside = !inside;
+                    }
+                }
+                return inside;
+            }
+            
+            calculateTerritorySize() {
+                this.territorySize = Math.round((this.territory.length / (CANVAS_WIDTH * CANVAS_HEIGHT)) * 10000) / 100;
+            }
+            
+            die() {
+                this.alive = false;
+                if (this === currentPlayer) {
+                    endGame();
+                }
+            }
+            
+            draw() {
+                if (!this.alive) return;
+                
+                // Draw territory
+                ctx.fillStyle = this.color + '40'; // Semi-transparent
+                this.territory.forEach(t => {
+                    ctx.fillRect(t.x, t.y, GRID_SIZE, GRID_SIZE);
+                });
+                
+                // Draw trail
+                ctx.fillStyle = this.color + '80';
+                this.trail.forEach(t => {
+                    ctx.fillRect(t.x - PLAYER_SIZE/2, t.y - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
+                });
+                
+                // Draw player
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x - PLAYER_SIZE/2, this.y - PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE);
+                
+                // Draw name
+                ctx.fillStyle = '#000';
+                ctx.font = '12px Inter';
+                ctx.fillText(this.name, this.x - ctx.measureText(this.name).width/2, this.y - 15);
+            }
+        }
+        
+        // Navigation Functions
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + 'Section').classList.remove('hidden');
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Close mobile menu if open
+            document.getElementById('mobileMenu').classList.add('hidden');
+        }
+        
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+        
+        // Game Functions
+        function startGame() {
+            const playerName = document.getElementById('playerName').value.trim();
+            if (!playerName) {
+                alert('Please enter your name!');
+                return;
+            }
+            
+            document.getElementById('nameInput').classList.add('hidden');
+            document.getElementById('gameCanvas').classList.remove('hidden');
+            document.getElementById('gameControls').classList.remove('hidden');
+            
+            initializeGame(playerName);
+        }
+        
+        function initializeGame(playerName) {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Initialize players
+            players = [];
+            
+            // Create human player
+            currentPlayer = new Player(
+                playerName,
+                Math.random() * (CANVAS_WIDTH - 100) + 50,
+                Math.random() * (CANVAS_HEIGHT - 100) + 50,
+                PLAYER_COLORS[0],
+                false
+            );
+            players.push(currentPlayer);
+            
+            // Create AI players
+            for (let i = 1; i <= AI_PLAYERS; i++) {
+                const aiPlayer = new Player(
+                    `Bot ${i}`,
+                    Math.random() * (CANVAS_WIDTH - 100) + 50,
+                    Math.random() * (CANVAS_HEIGHT - 100) + 50,
+                    PLAYER_COLORS[i % PLAYER_COLORS.length],
+                    true
+                );
+                players.push(aiPlayer);
+            }
+            
+            // Update UI
+            document.getElementById('currentPlayerName').textContent = playerName;
+            
+            gameRunning = true;
+            setupControls();
+            gameLoop = setInterval(updateGame, gameSpeed);
+        }
+        
+        function setupControls() {
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning || !currentPlayer || !currentPlayer.alive) return;
+                
+                switch(e.key) {
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        currentPlayer.direction = { x: 0, y: -1 };
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        currentPlayer.direction = { x: 0, y: 1 };
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        currentPlayer.direction = { x: -1, y: 0 };
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        currentPlayer.direction = { x: 1, y: 0 };
+                        break;
+                }
+            });
+            
+            // Touch controls
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            });
+            
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                if (!gameRunning || !currentPlayer || !currentPlayer.alive) return;
+                
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    // Horizontal swipe
+                    currentPlayer.direction = deltaX > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 };
+                } else {
+                    // Vertical swipe
+                    currentPlayer.direction = deltaY > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 };
+                }
+            });
+        }
+        
+        function updateGame() {
+            if (!gameRunning) return;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            
+            // Update and draw players
+            players.forEach(player => {
+                player.update();
+                player.draw();
+            });
+            
+            // Update UI
+            updateUI();
+            
+            // Check win condition
+            checkWinCondition();
+        }
+        
+        function updateUI() {
+            if (!currentPlayer) return;
+            
+            // Update player stats
+            document.getElementById('playerTerritory').textContent = currentPlayer.territorySize.toFixed(1) + '%';
+            
+            // Update leaderboard
+            const sortedPlayers = [...players]
+                .filter(p => p.alive)
+                .sort((a, b) => b.territorySize - a.territorySize);
+            
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.innerHTML = '';
+            
+            sortedPlayers.forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item flex justify-between items-center p-3 rounded-lg border ' + 
+                    (player === currentPlayer ? 'bg-indigo-50 border-indigo-200' : 'bg-gray-50 border-gray-200');
+                
+                item.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="w-6 h-6 rounded-full mr-3" style="background-color: ${player.color}"></span>
+                        <span class="font-medium ${player === currentPlayer ? 'text-indigo-600' : ''}">${player.name}</span>
+                    </div>
+                    <span class="font-semibold">${player.territorySize.toFixed(1)}%</span>
+                `;
+                
+                leaderboard.appendChild(item);
+                
+                if (player === currentPlayer) {
+                    document.getElementById('playerRank').textContent = `#${index + 1}`;
+                }
+            });
+        }
+        
+        function checkWinCondition() {
+            const alivePlayers = players.filter(p => p.alive);
+            
+            if (alivePlayers.length === 1 && alivePlayers[0] !== currentPlayer) {
+                endGame();
+            }
+            
+            // Check if player has captured significant territory
+            if (currentPlayer && currentPlayer.alive && currentPlayer.territorySize >= 50) {
+                // Player wins!
+                endGame(true);
+            }
+        }
+        
+        function endGame(won = false) {
+            gameRunning = false;
+            clearInterval(gameLoop);
+            
+            const finalScore = currentPlayer ? currentPlayer.territorySize.toFixed(1) : '0.0';
+            const rank = getRank();
+            
+            document.getElementById('finalScore').textContent = finalScore;
+            document.getElementById('finalRank').textContent = `#${rank}`;
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+            
+            // Save to leaderboard
+            saveToLeaderboard(currentPlayer.name, parseFloat(finalScore));
+        }
+        
+        function getRank() {
+            if (!currentPlayer) return players.length;
+            
+            const sortedPlayers = [...players]
+                .sort((a, b) => b.territorySize - a.territorySize);
+            
+            return sortedPlayers.findIndex(p => p === currentPlayer) + 1;
+        }
+        
+        function saveToLeaderboard(name, score) {
+            let leaderboard = JSON.parse(localStorage.getItem('territoryConquestLeaderboard') || '[]');
+            
+            leaderboard.push({
+                name: name,
+                score: score,
+                date: new Date().toISOString()
+            });
+            
+            // Keep only top 10
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard = leaderboard.slice(0, 10);
+            
+            localStorage.setItem('territoryConquestLeaderboard', JSON.stringify(leaderboard));
+        }
+        
+        function restartGame() {
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            resetGame();
+        }
+        
+        function resetGame() {
+            gameRunning = false;
+            if (gameLoop) clearInterval(gameLoop);
+            
+            document.getElementById('gameCanvas').classList.add('hidden');
+            document.getElementById('gameControls').classList.add('hidden');
+            document.getElementById('nameInput').classList.remove('hidden');
+            document.getElementById('playerName').value = '';
+            
+            // Reset UI
+            document.getElementById('currentPlayerName').textContent = '-';
+            document.getElementById('playerTerritory').textContent = '0%';
+            document.getElementById('playerRank').textContent = '#-';
+            document.getElementById('leaderboard').innerHTML = '';
+        }
+        
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            icon.className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+        }
+        
+        // Contact Form Handler
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We\'ll get back to you soon.');
+            this.reset();
+        });
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show game section by default
+            showSection('game');
+            
+            // Set first nav link as active
+            document.querySelector('.nav-link').classList.add('active');
+        });
+        
+        // Prevent context menu on canvas
+        document.getElementById('gameCanvas').addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        // Resize handling
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 768) {
+                const canvas = document.getElementById('gameCanvas');
+                if (canvas) {
+                    canvas.style.width = '100%';
+                    canvas.style.maxWidth = '350px';
+                    canvas.style.height = '350px';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
